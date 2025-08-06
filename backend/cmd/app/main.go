@@ -11,6 +11,8 @@ import (
 	"github.com/yusufbulac/byfood-case/backend/pkg/logger"
 	"github.com/yusufbulac/byfood-case/backend/pkg/middleware"
 	"github.com/yusufbulac/byfood-case/backend/pkg/validator"
+
+	_ "github.com/yusufbulac/byfood-case/backend/docs"
 )
 
 // @title           ByFood Case API
@@ -19,7 +21,7 @@ import (
 // @contact.name    Yusuf Bulac
 // @contact.email   ybulac@gmail.com
 // @host            localhost:8080
-// @BasePath        /api
+// @BasePath        /api/v1
 func main() {
 	// Logger
 	logger.InitLogger()
