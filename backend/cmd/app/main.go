@@ -5,6 +5,7 @@ import (
 	"github.com/yusufbulac/byfood-case/backend/pkg/config"
 	"github.com/yusufbulac/byfood-case/backend/pkg/database"
 	"github.com/yusufbulac/byfood-case/backend/pkg/logger"
+	"github.com/yusufbulac/byfood-case/backend/pkg/validator"
 )
 
 func main() {
@@ -13,6 +14,7 @@ func main() {
 
 	config.LoadConfig()
 	database.ConnectMySQL(logger.Log)
+	validator.InitValidator()
 
 	app := fiber.New()
 
