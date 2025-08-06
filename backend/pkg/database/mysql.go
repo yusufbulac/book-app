@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"github.com/yusufbulac/byfood-case/backend/internal/model"
 	"log"
 
 	"github.com/yusufbulac/byfood-case/backend/pkg/config"
@@ -22,6 +23,10 @@ func ConnectMySQL(logger *zap.Logger) {
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logger.Fatal("Failed to connect to database", zap.Error(err))
+	}
+
+	if err := DB.AutoMigrate(&model.Book{}); err != nil {
+		logger.Fatal("Database migration failed", zap.Error(err))
 	}
 
 	log.Println("Connected to MySQL")
