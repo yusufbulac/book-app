@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/yusufbulac/byfood-case/backend/internal/model"
+	"github.com/yusufbulac/byfood-case/backend/pkg/errorhandler"
 	"gorm.io/gorm"
 )
 
@@ -23,27 +26,45 @@ func NewBookRepository(db *gorm.DB) BookRepository {
 
 func (r *bookRepository) GetAll() ([]model.Book, error) {
 	var books []model.Book
-	err := r.db.Find(&books).Error
-	return books, err
+	if err := r.db.Find(&books).Error; err != nil {
+		return nil, errorhandler.InternalError("Failed to get books")
+	}
+	return books, nil
 }
 
 func (r *bookRepository) GetByID(id uint) (*model.Book, error) {
 	var book model.Book
 	err := r.db.First(&book, id).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, errorhandler.NotFound("BOOK_NOT_FOUND", "Book not found")
+	}
 	if err != nil {
-		return nil, err
+		return nil, errorhandler.InternalError("Failed to get book by ID")
 	}
 	return &book, nil
 }
 
 func (r *bookRepository) Create(book *model.Book) error {
-	return r.db.Create(book).Error
+	if err := r.db.Create(book).Error; err != nil {
+		return errorhandler.InternalError("Failed to create book")
+	}
+	return nil
 }
 
 func (r *bookRepository) Update(book *model.Book) error {
-	return r.db.Save(book).Error
+	if err := r.db.Save(book).Error; err != nil {
+		return errorhandler.InternalError("Failed to update book")
+	}
+	return nil
 }
 
 func (r *bookRepository) Delete(id uint) error {
-	return r.db.Delete(&model.Book{}, id).Error
+	result := r.db.Delete(&model.Book{}, id)
+	if result.Error != nil {
+		return errorhandler.InternalError("Failed to delete book")
+	}
+	if result.RowsAffected == 0 {
+		return errorhandler.NotFound("BOOK_NOT_FOUND", "Book not found")
+	}
+	return nil
 }

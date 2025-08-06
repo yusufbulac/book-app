@@ -8,6 +8,7 @@ import (
 	"github.com/yusufbulac/byfood-case/backend/pkg/config"
 	"github.com/yusufbulac/byfood-case/backend/pkg/database"
 	"github.com/yusufbulac/byfood-case/backend/pkg/logger"
+	"github.com/yusufbulac/byfood-case/backend/pkg/middleware"
 	"github.com/yusufbulac/byfood-case/backend/pkg/validator"
 )
 
@@ -22,7 +23,9 @@ func main() {
 	validator.InitValidator()
 
 	// Fiber app
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		ErrorHandler: middleware.FiberErrorHandler(),
+	})
 
 	// Book Module
 	bookRepo := repository.NewBookRepository(db)

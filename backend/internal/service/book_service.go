@@ -61,6 +61,7 @@ func (s *bookService) Update(id uint, input dto.UpdateBookRequest) (*dto.BookRes
 	if err != nil {
 		return nil, err
 	}
+
 	if input.Title != nil {
 		book.Title = *input.Title
 	}
@@ -70,6 +71,7 @@ func (s *bookService) Update(id uint, input dto.UpdateBookRequest) (*dto.BookRes
 	if input.Year != nil {
 		book.Year = *input.Year
 	}
+
 	if err := s.repo.Update(book); err != nil {
 		return nil, err
 	}
@@ -78,7 +80,10 @@ func (s *bookService) Update(id uint, input dto.UpdateBookRequest) (*dto.BookRes
 }
 
 func (s *bookService) Delete(id uint) error {
-	return s.repo.Delete(id)
+	if err := s.repo.Delete(id); err != nil {
+		return err
+	}
+	return nil
 }
 
 func toBookResponse(book model.Book) dto.BookResponse {
