@@ -17,15 +17,6 @@ func NewBookHandler(service service.BookService) *BookHandler {
 	return &BookHandler{service: service}
 }
 
-func (h *BookHandler) RegisterRoutes(router fiber.Router) {
-	books := router.Group("/books")
-	books.Get("/", h.GetAll)
-	books.Get("/:id", h.GetByID)
-	books.Post("/", h.Create)
-	books.Put("/:id", h.Update)
-	books.Delete("/:id", h.Delete)
-}
-
 func (h *BookHandler) GetAll(c fiber.Ctx) error {
 	books, err := h.service.GetAll()
 	if err != nil {

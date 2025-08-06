@@ -61,14 +61,14 @@ func (s *bookService) Update(id uint, input dto.UpdateBookRequest) (*dto.BookRes
 	if err != nil {
 		return nil, err
 	}
-	if input.Title != "" {
-		book.Title = input.Title
+	if input.Title != nil {
+		book.Title = *input.Title
 	}
-	if input.Author != "" {
-		book.Author = input.Author
+	if input.Author != nil {
+		book.Author = *input.Author
 	}
-	if input.Year != 0 {
-		book.Year = input.Year
+	if input.Year != nil {
+		book.Year = *input.Year
 	}
 	if err := s.repo.Update(book); err != nil {
 		return nil, err

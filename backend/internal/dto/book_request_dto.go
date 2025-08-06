@@ -7,7 +7,7 @@ type CreateBookRequest struct {
 }
 
 type UpdateBookRequest struct {
-	Title  string `json:"title" validate:"omitempty,min=1,max=255"`
-	Author string `json:"author" validate:"omitempty,min=1,max=255"`
-	Year   int    `json:"year" validate:"omitempty,min=0"`
+	Title  *string `json:"title" validate:"omitempty,min=1,max=255"`
+	Author *string `json:"author" validate:"omitempty,min=1,max=255"`
+	Year   *int    `json:"year" validate:"omitempty,min=0"`
 }
