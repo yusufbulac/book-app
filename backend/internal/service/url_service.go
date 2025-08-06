@@ -41,25 +41,33 @@ func (s *urlService) ProcessURL(input dto.UrlProcessRequest) (*dto.UrlProcessRes
 	}
 }
 
+// Removes query parameters, fragments and trailing slashes
 func getCanonicalURL(u *url.URL) string {
-	// Remove query, fragment, trailing slash etc.
 	u.RawQuery = ""
 	u.Fragment = ""
 	u.Path = strings.TrimSuffix(u.Path, "/")
 	return u.String()
 }
 
+// Lowercase host/path and enforce https + www.
 func getRedirectionURL(u *url.URL) string {
-	// Example: enforce HTTPS and www
 	u.Scheme = "https"
-	if !strings.HasPrefix(u.Host, "www.") {
-		u.Host = "www." + u.Host
+
+	// Ensure lowercase host and add www.
+	host := strings.ToLower(u.Host)
+	if !strings.HasPrefix(host, "www.") {
+		host = "www." + host
 	}
+	u.Host = host
+
+	// Lowercase path
+	u.Path = strings.ToLower(u.Path)
+
 	return u.String()
 }
 
+// Apply canonical then redirection
 func getCombinedURL(u *url.URL) string {
-	// Apply both canonical and redirection transformations
 	u = cloneURL(u)
 	u = parseURL(getCanonicalURL(u))
 	return getRedirectionURL(u)
