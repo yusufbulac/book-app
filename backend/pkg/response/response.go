@@ -1,7 +1,7 @@
 package response
 
 import (
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 )
 
 type SuccessResponse struct {
@@ -15,7 +15,7 @@ type ErrorResponse struct {
 }
 
 // Success returns 200 OK with wrapped data
-func Success(c fiber.Ctx, data interface{}) error {
+func Success(c *fiber.Ctx, data interface{}) error {
 	return c.Status(fiber.StatusOK).JSON(SuccessResponse{
 		Success: true,
 		Data:    data,
@@ -23,7 +23,7 @@ func Success(c fiber.Ctx, data interface{}) error {
 }
 
 // Created returns 201 Created with wrapped data
-func Created(c fiber.Ctx, data interface{}) error {
+func Created(c *fiber.Ctx, data interface{}) error {
 	return c.Status(fiber.StatusCreated).JSON(SuccessResponse{
 		Success: true,
 		Data:    data,
@@ -31,6 +31,6 @@ func Created(c fiber.Ctx, data interface{}) error {
 }
 
 // NoContent returns 204 No Content (no body)
-func NoContent(c fiber.Ctx) error {
+func NoContent(c *fiber.Ctx) error {
 	return c.SendStatus(fiber.StatusNoContent)
 }

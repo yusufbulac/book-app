@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 	"github.com/yusufbulac/byfood-case/backend/internal/handler"
 	"github.com/yusufbulac/byfood-case/backend/internal/service"
 )

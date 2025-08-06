@@ -3,12 +3,12 @@ package middleware
 import (
 	"errors"
 	"github.com/go-playground/validator/v10"
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
 	"github.com/yusufbulac/byfood-case/backend/pkg/errorhandler"
 )
 
 func FiberErrorHandler() fiber.ErrorHandler {
-	return func(c fiber.Ctx, err error) error {
+	return func(c *fiber.Ctx, err error) error {
 		var appErr *errorhandler.AppError
 		if errors.As(err, &appErr) {
 			return c.Status(appErr.StatusCode).JSON(fiber.Map{

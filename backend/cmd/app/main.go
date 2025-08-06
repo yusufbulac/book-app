@@ -1,7 +1,8 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v3"
+	"github.com/gofiber/fiber/v2"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 	"github.com/yusufbulac/byfood-case/backend/internal/repository"
 	"github.com/yusufbulac/byfood-case/backend/internal/routes"
 	"github.com/yusufbulac/byfood-case/backend/internal/service"
@@ -12,6 +13,13 @@ import (
 	"github.com/yusufbulac/byfood-case/backend/pkg/validator"
 )
 
+// @title           ByFood Case API
+// @version         1.0
+// @description     Book API for byFood case study
+// @contact.name    Yusuf Bulac
+// @contact.email   ybulac@gmail.com
+// @host            localhost:8080
+// @BasePath        /api
 func main() {
 	// Logger
 	logger.InitLogger()
@@ -36,10 +44,11 @@ func main() {
 	routes.RegisterBookRoutes(v1, bookService)
 
 	// Root route
-	app.Get("/", func(c fiber.Ctx) error {
+	app.Get("/", func(c *fiber.Ctx) error {
 		logger.Log.Info("Root endpoint hit")
 		return c.SendString("Backend is running...")
 	})
 
+	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 	app.Listen(":" + config.AppConfig.AppPort)
 }
