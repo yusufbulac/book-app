@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  byfood-mysql:
+    image: mysql:8.0
+    container_name: byfood-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: byfood
+      MYSQL_USER: byfood_user
+      MYSQL_PASSWORD: byfood_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  byfood-backend:
+    build:
+      context: ./backend
+    container_name: byfood-backend
+    depends_on:
+      byfood-mysql:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:
