@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/yusufbulac/byfood-case/backend/pkg/response"
 	"strconv"
 
 	"github.com/gofiber/fiber/v3"
@@ -23,7 +24,7 @@ func (h *BookHandler) GetAll(c fiber.Ctx) error {
 	if err != nil {
 		return errorhandler.InternalError("Failed to fetch books")
 	}
-	return c.JSON(books)
+	return response.Success(c, books)
 }
 
 func (h *BookHandler) GetByID(c fiber.Ctx) error {
@@ -35,7 +36,7 @@ func (h *BookHandler) GetByID(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(book)
+	return response.Success(c, book)
 }
 
 func (h *BookHandler) Create(c fiber.Ctx) error {
@@ -50,7 +51,7 @@ func (h *BookHandler) Create(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.Status(fiber.StatusCreated).JSON(book)
+	return response.Created(c, book)
 }
 
 func (h *BookHandler) Update(c fiber.Ctx) error {
@@ -69,7 +70,7 @@ func (h *BookHandler) Update(c fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(book)
+	return response.Success(c, book)
 }
 
 func (h *BookHandler) Delete(c fiber.Ctx) error {
@@ -80,5 +81,5 @@ func (h *BookHandler) Delete(c fiber.Ctx) error {
 	if err := h.service.Delete(uint(id)); err != nil {
 		return err
 	}
-	return c.SendStatus(fiber.StatusNoContent)
+	return response.NoContent(c)
 }
