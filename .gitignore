@@ -1,0 +1,11 @@
+# IntelliJ IDEA specific files
+.idea/
+*.iml
+*.iws
+*.ipr
+*.idea
+workspace.xml
+tasks.xml
+
+# macOS specific files
+.DS_Store
