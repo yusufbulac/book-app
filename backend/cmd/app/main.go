@@ -39,9 +39,13 @@ func main() {
 	bookRepo := repository.NewBookRepository(db)
 	bookService := service.NewBookService(bookRepo)
 
+	// Url module
+	urlService := service.NewUrlService()
+
 	// Routes
 	v1 := app.Group("/api/v1")
 	routes.RegisterBookRoutes(v1, bookService)
+	routes.RegisterUrlRoutes(v1, urlService)
 
 	// Root route
 	app.Get("/", func(c *fiber.Ctx) error {
