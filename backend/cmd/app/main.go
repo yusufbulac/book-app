@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
 	"github.com/yusufbulac/byfood-case/backend/internal/repository"
 	"github.com/yusufbulac/byfood-case/backend/internal/routes"
@@ -36,6 +37,12 @@ func main() {
 	app := fiber.New(fiber.Config{
 		ErrorHandler: middleware.FiberErrorHandler(),
 	})
+
+	//Cors config
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*", // http://localhost:3000
+		AllowHeaders: "Origin, Content-Type, Accept",
+	}))
 
 	// Book Module
 	bookRepo := repository.NewBookRepository(db)
