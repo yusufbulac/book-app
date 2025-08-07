@@ -44,6 +44,8 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
+	app.Use(middleware.RequestLogger())
+
 	// Book Module
 	bookRepo := repository.NewBookRepository(db)
 	bookService := service.NewBookService(bookRepo)
