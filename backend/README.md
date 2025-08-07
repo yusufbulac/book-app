@@ -89,7 +89,7 @@ Content-Type: application/json
 ### Process URL
 
 ```http
-POST /api/v1/url/process
+POST /api/v1/url/transform
 Content-Type: application/json
 
 {
