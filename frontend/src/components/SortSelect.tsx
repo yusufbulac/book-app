@@ -1,6 +1,7 @@
 "use client";
 
 import { useBooksUi } from "@/context/BooksUiContext";
+import type { SortKey } from "@/context/BooksUiContext";
 
 export default function SortSelect() {
     const { sort, setSort } = useBooksUi();
@@ -8,7 +9,9 @@ export default function SortSelect() {
         <select
             className="border rounded-lg px-3 py-2"
             value={sort}
-            onChange={(e) => setSort(e.target.value as any)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setSort(e.target.value as SortKey)
+            }
             aria-label="Sort books"
         >
             <option value="title-asc">Title ↑</option>

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useMemo } from "react";
 
-type SortKey = "title-asc" | "title-desc" | "year-asc" | "year-desc";
+export type SortKey = "title-asc" | "title-desc" | "year-asc" | "year-desc";
 
 type BooksUiState = {
     query: string;
