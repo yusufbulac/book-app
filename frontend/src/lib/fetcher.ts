@@ -40,8 +40,13 @@ export async function request<T>(url: string, init: ReqInit = {}) {
     });
 
     if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        throw new Error(`HTTP ${res.status} ${res.statusText} - ${text || url}`);
+        const raw = await res.text().catch(() => "");
+        const ct = res.headers.get("content-type") || "";
+        let details: unknown = raw;
+        if (ct.includes("application/json")) {
+            try { details = JSON.parse(raw); } catch {}
+        }
+        throw new ApiError(`HTTP ${res.status} ${res.statusText}`, res.status, details);
     }
 
     const ct = res.headers.get("content-type") || "";
@@ -53,10 +58,14 @@ export async function request<T>(url: string, init: ReqInit = {}) {
 }
 
 export function apiBaseUrl() {
-    if (typeof window === "undefined") {
-        return process.env.BOOKS_API_BASE_URL
-            ?? process.env.NEXT_PUBLIC_API_BASE_URL
-            ?? "http://localhost:8080";
+    const val =
+        typeof window === "undefined"
+            ? (process.env.BOOKS_API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL)
+            : process.env.NEXT_PUBLIC_API_BASE_URL;
+
+    if (!val) {
+        if (process.env.NODE_ENV !== "production") return "http://localhost:8080";
+        throw new Error("API base URL is not configured (NEXT_PUBLIC_API_BASE_URL).");
     }
-    return process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
+    return val;
 }
