@@ -25,8 +25,12 @@ export async function fetchBookById(id: number): Promise<BookResponse | null> {
     }
 }
 
-export async function updateBook(book: UpdateBookRequest): Promise<void> {
-    await request(`${BASE()}/${book.id}`, { method: "PUT", json: book });
+export async function updateBook(book: UpdateBookRequest): Promise<BookResponse> {
+    const data = await request<{ data: BookResponse }>(`${BASE()}/${book.id}`, {
+        method: "PUT",
+        json: book,
+    });
+    return data.data;
 }
 
 export async function deleteBook(id: number): Promise<void> {

@@ -12,62 +12,51 @@ export class ApiError extends Error {
 
 type JsonBody = unknown;
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-    return typeof value === "object" && value !== null;
-}
+type ReqInit = Omit<RequestInit, "body"> & {
+    json?: JsonBody;
+};
 
-function getStringField(obj: Record<string, unknown>, key: string): string | null {
-    const v = obj[key];
-    return typeof v === "string" ? v : null;
-}
+export async function request<T>(url: string, init: ReqInit = {}) {
+    const { json, ...rest } = init;
 
-export async function request<T>(
-    input: string,
-    init?: RequestInit & { json?: JsonBody }
-): Promise<T> {
-    const { json, headers, ...rest } = init ?? {};
-    const finalHeaders: HeadersInit = {
-        Accept: "application/json",
-        ...(json ? { "Content-Type": "application/json" } : {}),
-        ...(headers ?? {}),
-    };
+    const headers = new Headers(rest.headers);
+    let body: BodyInit | undefined;
 
-    const res = await fetch(input, {
+    if (json !== undefined) {
+        headers.set("Content-Type", "application/json");
+        body = JSON.stringify(json);
+    }
+
+    const method = rest.method ?? (json !== undefined ? "POST" : "GET");
+
+    const res = await fetch(url, {
+        cache: rest.cache ?? "no-store",
         ...rest,
-        headers: finalHeaders,
-        body: json ? JSON.stringify(json) : init?.body,
+        method,
+        headers,
+        body,
+        credentials: rest.credentials ?? "omit",
+        mode: rest.mode ?? "cors",
     });
 
     if (!res.ok) {
-        let payload: unknown = null;
-        try {
-            payload = await res.json();
-        } catch {
-            // no-op
-        }
-
-        let message = `HTTP ${res.status} ${res.statusText || ""}`.trim();
-        if (isRecord(payload)) {
-            const m = getStringField(payload, "message");
-            const e = getStringField(payload, "error");
-            if (m) message = m;
-            else if (e) message = e;
-        }
-
-        throw new ApiError(message, res.status, payload);
+        const text = await res.text().catch(() => "");
+        throw new Error(`HTTP ${res.status} ${res.statusText} - ${text || url}`);
     }
 
-    try {
+    const ct = res.headers.get("content-type") || "";
+    if (ct.includes("application/json")) {
         return (await res.json()) as T;
-    } catch {
-        return {} as T;
     }
+
+    return (await res.text()) as T;
 }
 
 export function apiBaseUrl() {
-    return (
-        (typeof window === "undefined"
-            ? process.env.BOOKS_API_BASE_URL
-            : process.env.NEXT_PUBLIC_API_BASE_URL) || "http://localhost:8080"
-    );
+    if (typeof window === "undefined") {
+        return process.env.BOOKS_API_BASE_URL
+            ?? process.env.NEXT_PUBLIC_API_BASE_URL
+            ?? "http://localhost:8080";
+    }
+    return process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 }
