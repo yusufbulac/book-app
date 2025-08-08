@@ -62,7 +62,7 @@ Server starts at: `http://localhost:8080`
 ## Running Tests
 
 ```bash
-go test ./...
+go test ./... -v
 go test -cover ./...
 ```
 
