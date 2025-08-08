@@ -32,5 +32,18 @@ services:
     ports:
       - "8080:8080"
 
+  byfood-frontend:
+    build:
+      context: ./frontend
+    container_name: byfood-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - byfood-backend
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://byfood-backend:8080
+    stdin_open: true
+    tty: true
+
 volumes:
   mysql_data:
