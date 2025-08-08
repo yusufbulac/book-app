@@ -66,6 +66,7 @@ go test ./... -v
 go test -cover ./...
 ```
 
+- BookHandler and UrlHandler are covered with integration tests.
 - BookService and UrlService are covered with unit tests.
 - `coverage: 91.9%` in service layer.
 
